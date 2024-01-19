@@ -8,13 +8,12 @@
   O projeto em si, além de muito gratificante de ser realizado, foi muito importante para me aprofundar nas linguagens e ferramentas aqui utilizadas, bem como:<br>
       - Python, flask<br>
       - SQL<br>
-      - Design UI e principalmente UX, em CSS/HTML
 
 <h2>COMO EXECUTAR<h2/>
   Abra 'inouts.py' para executar o script e iniciar o server em '0.0.0.0:5005' ou 'localhost:5005'.<br>
   <br>
   Será necessário executar 'pip install {nome da biblioteca}' para cada uma delas.<br>
-  utilizei as bibliotecas:<br>
+  Utilizei as seguintes bibliotecas:<br>
   
         flask, sqlite3, datetime;
         
