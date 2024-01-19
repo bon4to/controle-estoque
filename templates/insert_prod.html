@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="{{ url_for('static', filename='translegua.ico') }}" type="image/x-icon">
+        <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap">
+        <link rel="stylesheet" href="{{ url_for('static', filename='select2.css') }}"/>
+        <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='select2.min.js') }}"></script>
+
+        <title>Produtos | TRANS LÉGUA</title>
+    </head>
+
+    <body>
+        <header class="main-header">
+            <div class="logo-container">
+                <img class="logo" src="{{ url_for('static', filename='logo.png') }}" alt="Trans Légua">
+                <img class="logo" src="{{ url_for('static', filename='logo2.png') }}" alt="Lucas Bonato">
+            </div>
+            <nav class="main-nav">
+                <header class="header-link">
+                    <a href="{{ url_for('insert_prod') }}" class="nav-link">PRODUTOS</a>
+                </header>
+                <header class="header-link">
+                    <a href="{{ url_for('saldo') }}" class="nav-link">ESTOQUE</a>
+                </header>
+            </nav>
+        </header>
+
+        <section class="banner text-overlay">
+            <img class="blurable" src="{{ url_for('static', filename='banner.jpg') }}" alt="Banner">
+            <span class="header-title">PRODUTOS | HUGO PIETRO</span>
+        </section>
+        <div class="header-bar"></div>
+        <br>
+
+        <div class="container">
+            <div class="form-container" style="height: 20%">
+                <form style="width: 100%" method="post" action="{{ url_for('insert_prod') }}">
+                    <h1>Produto</h1>
+                    <div>
+                        <label for="produto">Insira novos produtos:</label>
+                        <input type="text" name="produto" placeholder="Descrição do Item..." required>
+                    </div>
+                    <input class="subm" type="submit" value="Inserir" style="width: 100%">
+                </form>
+            </div>
+            <div class="tables-container" >
+                <h1>Produtos cadastrados</h1>
+                    <div style="max-height: 600px; overflow-y: auto;">
+                        <table>
+                            <tr>
+                                <th>Produto</th>
+                            </tr>
+                            {% for item in produtos %}
+                                <tr >
+                                    <td>{{ item }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                <a href="{{ url_for('export_produtos_csv') }}">Exportar tabela</a>
+            </div>
+        </div>
+        <div id="footer">
+            <p style="font-weight: bold;">&copy; 2023 Lucas G. Bonato. Todos os direitos reservados.</p>
+            <p>Conecte-se comigo:</p>
+            <ul class="footer-links">
+                <li>
+                    <a href="https://www.linkedin.com/in/lucas-bonato/" target="_blank">
+                        <img class="footer" src="{{ url_for('static', filename='lkdin.png') }}" alt="LinkedIn">
+                    </a>
+                </li>
+                <li>
+                    <a href="mailto:lucas.bon4to@gmail.com" target="_blank">
+                        <img class="footer" src="{{ url_for('static', filename='email.png') }}" alt="E-mail">
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    </body>
+</html>
+

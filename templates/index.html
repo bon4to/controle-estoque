@@ -1,1 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="{{ url_for('static', filename='translegua.ico') }}" type="image/x-icon">
+        <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap">
+        <link rel="stylesheet" href="{{ url_for('static', filename='select2.css') }}"/>
+        <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='select2.min.js') }}"></script>
 
+        <title>Controle | TRANS LÉGUA</title>
+    </head>
+
+    <body>
+        <header class="main-header">
+
+            <div class="logo-container">
+                <img class="logo" src="{{ url_for('static', filename='logo.png') }}" alt="Trans Légua">
+                <img class="logo" src="{{ url_for('static', filename='logo2.png') }}" alt="Lucas Bonato">
+            </div>
+
+            <nav class="main-nav">
+                <header class="header-link">
+                    <a href="{{ url_for('insert_prod') }}" class="nav-link">PRODUTOS</a>
+                </header>
+
+                <header class="header-link">
+                    <a href="{{ url_for('saldo') }}" class="nav-link">ESTOQUE</a>
+                </header>
+            </nav>
+
+        </header>
+
+        <section class="banner text-overlay">
+            <img class="blurable" src="{{ url_for('static', filename='banner.jpg') }}" alt="Banner">
+            <span class="header-title">CONTROLE DE ESTOQUE</span>
+        </section>
+
+        <div class="header-bar"></div>
+        <br>
+
+        <div class="container">
+            <div class="form-container" style="min-height: 700px">
+                <form method="post" action="{{ url_for('movimentar') }}">
+                    <h1>Movimentar Estoque</h1>
+                    <label for="operacao">Operação</label>
+                    <select name="operacao" id="operacao" onchange="toggleFields()">
+                        <option value="entrada">Entrada</option>
+                        <option value="saída">Saída</option>
+                        <option value="transferencia">Transferência</option>
+                    </select>
+
+                    <label for="letra">Endereço</label>
+                    <div class="endereco-container">
+                        <select name="letra">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="PROD.">Produção</option>
+                            <option value="SEPAR.">Separação</option>
+                        </select>
+                        <label for="numero">.</label>
+                        <input type="number" name="numero" step="any" min="1" max="99999.9" required placeholder="Número...">
+                    </div>
+
+                    <div id="destinoFields" style="display: none;">
+                        <label for="destino_letra">Endereço de Destino</label>
+                        <div>
+                            <div class="endereco-container">
+                                <select id="destino_letra" >
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="PROD.">Produção</option>
+                                    <option value="SEPAR.">Separação</option>
+                                </select>
+                                <label for="destino_numero">.</label>
+                                <input type="number" id="destino_numero" step="any" min="1" max="99999.9" placeholder="Número...">
+                            </div>
+                        </div>
+                    </div>
+                        <label for="produto">Produto</label>
+                    <div>
+                        <select name="produto" id="produto" class="select2">
+                            {% for produto in produtos %}
+                                <option value="{{ produto }}">{{ produto }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <label for="lote">Lote</label>
+                    <div>
+                        <input class="integ" pattern="[A-Z0-9]{6}" maxlength="6" type="text" name="lote" required placeholder="(por exemplo: CS1234)">
+                    </div>
+                    <label for="quantidade">Quantidade</label>
+                    <div>
+                        <input class="integ" type="number" name="quantidade" min="1" required placeholder="Quantidade...">
+                    </div>
+
+                    <br>
+                    <input class="subm" type="submit" value="Registrar Movimentação">
+                </form>
+            </div>
+            <div class="tables-container">
+                <h1>Saldo Atual do Estoque</h1>
+                <div style="max-height: 500px; overflow-y: auto;">
+                    <table>
+                        <tr>
+                            <th>Rua</th>
+                            <th>Número</th>
+                            <th>Produto</th>
+                            <th>Lote</th>
+                            <th>Saldo</th>
+                        </tr>
+                        {% for item in saldo_atual %}
+                        <tr>
+                            <td>{{ item['letra'] }}</td>
+                            <td>{{ item['numero'] }}</td>
+                            <td>{{ item['produto'] }}</td>
+                            <td>{{ item['lote'] }}</td>
+                            <td>{{ item['saldo'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <a href="{{ url_for('export_saldo_csv') }}">Exportar tabela</a>
+                <h1>Histórico de Movimentação por Endereço</h1>
+                <div style="max-height: 500px; overflow-y: auto;">
+                    <table>
+                        <tr>
+                            <th>Rua</th>
+                            <th>Número</th>
+                            <th>Produto</th>
+                            <th>Operação</th>
+                            <th>Quantidade</th>
+                            <th>Lote</th>
+                            <th>Horário</th>
+                        </tr>
+                        {% for item in estoque %}
+                        <tr>
+                            <td>{{ item['letra'] }}</td>
+                            <td>{{ item['numero'] }}</td>
+                            <td>{{ item['produto'] }}</td>
+                            <td>{{ item['operacao'] }}</td>
+                            <td>{{ item['quantidade'] }}</td>
+                            <td>{{ item['lote'] }}</td>
+                            <td>{{ item['timestamp'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <a href="{{ url_for('export_estoque_csv') }}">Exportar tabela</a>
+            </div>
+        </div>
+
+        <div id="footer">
+
+            <p style="font-weight: bold;">Desenvolvido e testado por &copy; 2023 Lucas G. Bonato. <br> Todos os direitos reservados.</p> <br>
+            <p>Conecte-se comigo:</p>
+            <ul class="footer-links">
+                <li>
+                    <a href="https://www.linkedin.com/in/lucas-bonato/" target="_blank">
+                        <img class="footer" src="{{ url_for('static', filename='lkdin.png') }}" alt="LinkedIn">
+                    </a>
+                </li>
+                <li>
+                    <a href="mailto:lucas.bon4to@gmail.com" target="_blank">
+                        <img class="footer" src="{{ url_for('static', filename='email.png') }}" alt="E-mail">
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        {% if mensagem_alerta %}
+            <script>
+                alert("{{ mensagem_alerta }}");
+                window.location.href = "{{ url_for('index') }}";
+            </script>
+        {% endif %}
+
+
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    </body>
+</html>
